@@ -22,6 +22,8 @@
     System.out.println(StringUtil.format(d, "#,##0.00"));//1,234.57
     double p = 0.025d;
     System.out.println(StringUtil.format(p, "P2"));//2.50%
+    System.out.println(StringUtil.format(p, "0.00%"));//2.50%
+    System.out.println(StringUtil.format(p, "0.00‰"));//25.00‰
 ```
 整型特有(byte,short,int,longByte,Short,Integer,Long)
 ```java
