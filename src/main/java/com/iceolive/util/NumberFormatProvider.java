@@ -63,7 +63,6 @@ public abstract class NumberFormatProvider implements IFormatProvider {
         }
         matcher = GENERAL_REG.matcher(format);
         if (matcher.find()) {
-            //todo 不支持
             BigDecimal bigDecimal = new BigDecimal(obj.toString());
             int digits = 2;
             String num = matcher.group(1);

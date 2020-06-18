@@ -24,7 +24,7 @@ public interface IFormatProvider {
      */
     Pattern  FIXED_POINT_REG = Pattern.compile("^[fF](\\d*)$");
     /**
-     * 常规  todo 规则过于复杂，先跳过
+     * 常规  todo 规则过于复杂，暂同定点
      */
     Pattern  GENERAL_REG = Pattern.compile("^[gG](\\d*)$");
     /**
