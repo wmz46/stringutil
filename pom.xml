@@ -9,9 +9,9 @@
         <version>7</version>
     </parent>
     <groupId>com.iceolive</groupId>
-    <artifactId>StringUtil</artifactId>
+    <artifactId>stringutil</artifactId>
     <version>1.0.0</version>
-    <description>A stringUtil that uses the format specification of C#'s ToString written in Java</description>
+    <description>A string tool that uses the format specification of C#'s ToString written in Java</description>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
