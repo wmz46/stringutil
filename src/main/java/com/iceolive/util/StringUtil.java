@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.regex.Matcher;
+
 
 /**
  * 字符串工具类
@@ -94,18 +96,20 @@ public class StringUtil {
     }
 
     public static <T> T parse(String str, Class<T> clazz) {
-        if(clazz.isAssignableFrom(boolean.class) || clazz.isAssignableFrom(Boolean.class)){
-            return (T)parseBoolean(str,clazz);
+        if (clazz.isAssignableFrom(boolean.class) || clazz.isAssignableFrom(Boolean.class)) {
+            return (T) parseBoolean(str, clazz);
         }
-        return parse(str,null,clazz);
+        return parse(str, null, clazz);
     }
-    public static <T> T tryParse(String str,  T defaultVal, Class<T> clazz) {
-        try{
-            return parse(str,clazz);
-        }catch (Exception e){
+
+    public static <T> T tryParse(String str, T defaultVal, Class<T> clazz) {
+        try {
+            return parse(str, clazz);
+        } catch (Exception e) {
             return defaultVal;
         }
     }
+
     /**
      * 反格式化，出错会抛运行时异常，请自行捕获
      *
@@ -117,8 +121,12 @@ public class StringUtil {
      */
     public static <T> T parse(String str, String format, Class<T> clazz) {
         Object val = null;
-        if(clazz.isPrimitive()){
+        if (clazz.isPrimitive()) {
             val = 0;
+        }
+        if (Arrays.asList("int", "java.lang.Integer", "byte", "java.lang.Byte", "long", "java.lang.Long", "short", "java.lang.Short", "float", "java.lang.Float", "double", "java.lang.Double", "java.math.BigDecimal").contains(clazz.getName())) {
+            //数值类型，需要处理特殊符号
+            str = unFormat(str, format);
         }
         if (clazz.isAssignableFrom(byte.class)) {
             if (!StringUtil.isEmpty(str)) {
@@ -132,7 +140,7 @@ public class StringUtil {
             if (!StringUtil.isEmpty(str)) {
                 val = Short.parseShort(str);
             }
-        } else if (clazz.isAssignableFrom( Short.class)) {
+        } else if (clazz.isAssignableFrom(Short.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Short.parseShort(str);
             }
@@ -140,19 +148,19 @@ public class StringUtil {
             if (!StringUtil.isEmpty(str)) {
                 val = Integer.parseInt(str);
             }
-        } else if (clazz.isAssignableFrom(Integer.class) ) {
+        } else if (clazz.isAssignableFrom(Integer.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Integer.parseInt(str);
             }
-        } else if (clazz.isAssignableFrom(long.class )) {
+        } else if (clazz.isAssignableFrom(long.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Long.parseLong(str);
             }
-        } else if (clazz.isAssignableFrom(Long.class )) {
+        } else if (clazz.isAssignableFrom(Long.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Long.parseLong(str);
             }
-        } else if (clazz.isAssignableFrom(float.class )) {
+        } else if (clazz.isAssignableFrom(float.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Float.parseFloat(str);
             }
@@ -191,6 +199,64 @@ public class StringUtil {
         return (T) val;
     }
 
+    //取出特殊符号
+    private static String unFormat(String str, String format) {
+        Matcher matcher = null;
+        if (isEmpty(format)) {
+            return str;
+        }
+        matcher = IFormatProvider.CURRENCY_REG.matcher(format);
+        if (matcher.find()) {
+            //货币
+            //去掉非数字符号
+            String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+            return num;
+        }
+        matcher = IFormatProvider.PERCENT_REG.matcher(format);
+        if (matcher.find()) {
+            //去掉非数字符号
+            String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+            //百分号 *100
+            BigDecimal bigDecimal = new BigDecimal(num);
+            return bigDecimal.divide(new BigDecimal("100")).toString();
+        }
+        matcher = IFormatProvider.NUMERIC_REG.matcher(format);
+        if (matcher.find()) {
+            //千位符
+            //去掉非数字符号
+            String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+            return num;
+        }
+        matcher = IFormatProvider.HEXADECIMAL_REG.matcher(format);
+        if (matcher.find()) {
+            //十六进制
+            return Integer.valueOf(str, 16).toString();
+        }
+        matcher = IFormatProvider.CUSTOM_REG.matcher(format);
+        if (matcher.find()) {
+            //判断百分号，千分号，指数符号
+            if (format.contains("%") && format.contains("%")) {
+                //去掉非数字符号
+                String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+                //百分号
+                BigDecimal bigDecimal = new BigDecimal(num);
+                return bigDecimal.divide(new BigDecimal("100")).toString();
+            } else if (format.contains("‰") && str.contains("‰")) {
+                //去掉非数字符号
+                String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+                //百分号
+                BigDecimal bigDecimal = new BigDecimal(num);
+                return bigDecimal.divide(new BigDecimal("1000")).toString();
+            } else {
+                //去掉非数字符号
+                String num = IFormatProvider.NOT_NUMBER_CHAR.matcher(str).replaceAll("");
+                return num;
+            }
+        }
+        return str;
+
+    }
+
     /**
      * 反格式化，出错不抛异常
      *
@@ -207,12 +273,5 @@ public class StringUtil {
         } catch (Exception e) {
             return defaultVal;
         }
-    }
-
-    public static void main(String[] args) {
-
-
-        System.out.println(StringUtil.parseBoolean("true",  Boolean.class));
-        System.out.println(StringUtil.parse("1234","N0",int.class));
     }
 }

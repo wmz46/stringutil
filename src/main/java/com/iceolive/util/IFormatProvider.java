@@ -44,6 +44,11 @@ public interface IFormatProvider {
      * 自定义格式
      */
     Pattern CUSTOM_REG = Pattern.compile("[#0\\.\\,]+");
+
+    /**
+     * 非数字字符
+     */
+    Pattern NOT_NUMBER_CHAR = Pattern.compile("[^-\\d\\.]");
     /**
      * 格式化
      * @param obj 对象
@@ -51,4 +56,6 @@ public interface IFormatProvider {
      * @return 格式化后的字符串
      */
     String format(Object obj, String format);
+
+
 }

@@ -11,6 +11,7 @@
 </dependency>
 ```
 ## 二、快速开始
+### 格式化
 所有数值类型，包括整型和浮点型(byte,short,int,long,float,double,Byte,Short,Integer,Long,Float,Double,BigDecimal)
 ```java
     double d = 1234.567d;
@@ -39,6 +40,46 @@
     System.out.println(StringUtil.format(d2, "yyyy-MM-dd"));//2020-06-18
     LocalDateTime d3 = LocalDateTime.now();
     System.out.println(StringUtil.format(d3, "yyyy-MM-dd HH:mm:ss"));//2020-06-18 22:40:03
+```
+### 反格式化
+```java
+    //布尔型
+    String str = "true";
+    System.out.println(StringUtil.parse(str,  boolean.class));//true
+    System.out.println(StringUtil.parseBoolean(str, boolean.class));//true
+    str = "是";
+    System.out.println(StringUtil.parseBoolean(str, "是", "否", boolean.class));//true
+    //十六进制
+    str = "0FF";
+    System.out.println(StringUtil.parse(str, "X", int.class));//255
+    str = "0ff";
+    System.out.println(StringUtil.parse(str, "x", int.class));//255
+    //千位符
+    str = "-1,234.56";
+    System.out.println(StringUtil.parse(str, "N", double.class));//-1234.56
+    System.out.println(StringUtil.parse(str, "#,###.00", double.class));//-1234.56
+    //百分比
+    str = "-1.23%";
+    System.out.println(StringUtil.parse(str, "P", double.class));//0.0123
+    System.out.println(StringUtil.parse(str, "0.##%", double.class));//0.0123
+    //千分比
+    str = "-1.23‰";
+    System.out.println(StringUtil.parse(str, "0.##‰", double.class));//0.00123
+    //指数
+    str = "-1.235400e-003";
+    System.out.println(StringUtil.parse(str, "E", double.class));//-0.0012354
+    System.out.println(StringUtil.parse(str,  double.class));//-0.0012354
+    //货币
+    str = "-$12.34";
+    System.out.println(StringUtil.parse(str,"C",double.class));//-12.34
+    str = "-￥12.34";
+    System.out.println(StringUtil.parse(str,"C",double.class));//-12.34
+    //日期
+    str = "2020-06-19";
+    System.out.println(StringUtil.parse(str,"yyyy-MM-dd",LocalDate.class));//2020-06-19
+
+    //以上方法反格式化错误均会抛运行时异常，请自行捕获处理。如不想处理异常请使用tryParse方法,并提供出错默认值，进行反格式化
+    System.out.println(StringUtil.tryParse("20160503","yyyy-MM-dd",LocalDate.now(),LocalDate.class));
 ```
 
 ## 三、开发背景
