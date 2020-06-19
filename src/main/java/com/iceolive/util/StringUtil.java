@@ -193,7 +193,16 @@ public class StringUtil {
         } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return (T) LocalDateTime.parse(str, dateTimeFormatter);
-        } else {
+        }else if(clazz.isAssignableFrom(char.class)){
+            if (!StringUtil.isEmpty(str)) {
+                val = str.charAt(0);
+            }
+        }else if(clazz.isAssignableFrom(Character.class)){
+            if (!StringUtil.isEmpty(str)) {
+                val = str.charAt(0);
+            }
+        }
+        else {
             val = str;
         }
         return (T) val;
