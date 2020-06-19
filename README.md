@@ -7,7 +7,7 @@
 <dependency>
   <groupId>com.iceolive</groupId>
   <artifactId>stringutil</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 ## 二、快速开始
@@ -81,7 +81,7 @@
     //以上方法反格式化错误均会抛运行时异常，请自行捕获处理。如不想处理异常请使用tryParse方法,并提供出错默认值，进行反格式化
     System.out.println(StringUtil.tryParse("20160503","yyyy-MM-dd",LocalDate.now(),LocalDate.class));
 ```
-
+数值格式化的定义请参考[标准数字格式字符串](https://docs.microsoft.com/zh-cn/dotnet/standard/base-types/standard-numeric-format-strings)和[自定义数字格式字符串](https://docs.microsoft.com/zh-cn/dotnet/standard/base-types/custom-numeric-format-strings),部分非常用格式可能未支持
 ## 三、开发背景
 
 作为一个从事多年C#开发的程序员，习惯了ToString("")各种格式化的便利，在java上虽然也有各种各样的字符串工具库，但还是觉得C#的那套用起来更称手一点。
