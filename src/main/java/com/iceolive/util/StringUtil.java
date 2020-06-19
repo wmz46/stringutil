@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * 字符串工具类
@@ -93,10 +94,17 @@ public class StringUtil {
     }
 
     public static <T> T parse(String str, Class<T> clazz) {
+        if(clazz.isAssignableFrom(boolean.class) || clazz.isAssignableFrom(Boolean.class)){
+            return (T)parseBoolean(str,clazz);
+        }
         return parse(str,null,clazz);
     }
     public static <T> T tryParse(String str,  T defaultVal, Class<T> clazz) {
-        return  tryParse(str,null,clazz);
+        try{
+            return parse(str,clazz);
+        }catch (Exception e){
+            return defaultVal;
+        }
     }
     /**
      * 反格式化，出错会抛运行时异常，请自行捕获
@@ -108,74 +116,73 @@ public class StringUtil {
      * @return 反格式化对象
      */
     public static <T> T parse(String str, String format, Class<T> clazz) {
-        String typeName = clazz.getName();
         Object val = null;
         if(clazz.isPrimitive()){
             val = 0;
         }
-        if ("byte".equals(typeName)) {
+        if (clazz.isAssignableFrom(byte.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Byte.parseByte(str);
             }
-        } else if ("java.lang.Byte".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Byte.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Byte.parseByte(str);
             }
-        } else if ("short".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(short.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Short.parseShort(str);
             }
-        } else if ("java.lang.Short".equals(typeName)) {
+        } else if (clazz.isAssignableFrom( Short.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Short.parseShort(str);
             }
-        } else if ("int".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(int.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Integer.parseInt(str);
             }
-        } else if ("java.lang.Integer".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Integer.class) ) {
             if (!StringUtil.isEmpty(str)) {
                 val = Integer.parseInt(str);
             }
-        } else if ("long".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(long.class )) {
             if (!StringUtil.isEmpty(str)) {
                 val = Long.parseLong(str);
             }
-        } else if ("java.lang.Long".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Long.class )) {
             if (!StringUtil.isEmpty(str)) {
                 val = Long.parseLong(str);
             }
-        } else if ("float".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(float.class )) {
             if (!StringUtil.isEmpty(str)) {
                 val = Float.parseFloat(str);
             }
-        } else if ("java.lang.Float".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Float.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Float.parseFloat(str);
             }
-        } else if ("double".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(double.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Double.parseDouble(str);
             }
-        } else if ("java.lang.Double".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Double.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = Double.parseDouble(str);
             }
-        } else if ("java.math.BigDecimal".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(BigDecimal.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = new BigDecimal(str);
             }
-        } else if ("java.util.Date".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(Date.class)) {
             try {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
                 return (T) simpleDateFormat.parse(str);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-        } else if ("java.time.LocalDateTime".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(LocalDate.class)) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return (T) LocalDate.parse(str, dateTimeFormatter);
-        } else if ("java.time.LocalDate".equals(typeName)) {
+        } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return (T) LocalDateTime.parse(str, dateTimeFormatter);
         } else {
@@ -203,49 +210,9 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        String format = null;
-        Object obj = -123456789.1234;
-        System.out.println(obj);
-        format = "c2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "E2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "f0";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "g0";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "n2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "p2";
-        System.out.println(format + ":" + StringUtil.format(obj, format));
-        format = "duo#,##0.00";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
 
-        obj = -15;
-        System.out.println(obj);
-        //以下两种只支持整型
-        format = "d2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "X2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-
-        format = "c2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "e2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "f0";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "g0";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "n2";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-        format = "p0";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
-
-        format = "##0.00";
-        System.out.println(format + ":  " + StringUtil.format(obj, format));
 
         System.out.println(StringUtil.parseBoolean("true",  Boolean.class));
-        System.out.println(StringUtil.parse("2",null,short.class));
+        System.out.println(StringUtil.parse("1234","N0",int.class));
     }
 }
