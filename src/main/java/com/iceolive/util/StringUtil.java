@@ -35,6 +35,23 @@ public class StringUtil {
         }
         return isEmpty(str.trim());
     }
+    /**
+     * 判断两个字符串是否相同
+     *
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @return 是否相同
+     */
+    public static boolean equals(String str1, String str2) {
+        if (null == str1) {
+            return str2 == null;
+        } else if (null == str2) {
+            return false;
+        } else {
+            return str1.equals(str2);
+        }
+    }
+
 
     /**
      * 格式化
