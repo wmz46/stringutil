@@ -6,9 +6,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -35,6 +38,7 @@ public class StringUtil {
         }
         return isEmpty(str.trim());
     }
+
     /**
      * 判断两个字符串是否相同
      *
@@ -52,6 +56,39 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 获取第一个匹配字符串
+     * @param str 源字符串
+     * @param reg 正则
+     * @param group 分组序号
+     * @return 返回第一个匹配字符串
+     */
+    public static String matchOne(String str, String reg, int group) {
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find()) {
+            return matcher.group(group);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取所有匹配字符串
+     * @param str 源字符串
+     * @param reg 正则
+     * @param group 分组序号
+     * @return 返回所有匹配字符串
+     */
+    public static List<String> matchAll(String str, String reg, int group) {
+        List<String> list = new ArrayList<>();
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            list.add(matcher.group(group));
+        }
+        return list;
+    }
 
     /**
      * 格式化
@@ -210,16 +247,15 @@ public class StringUtil {
         } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return (T) LocalDateTime.parse(str, dateTimeFormatter);
-        }else if(clazz.isAssignableFrom(char.class)){
+        } else if (clazz.isAssignableFrom(char.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = str.charAt(0);
             }
-        }else if(clazz.isAssignableFrom(Character.class)){
+        } else if (clazz.isAssignableFrom(Character.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = str.charAt(0);
             }
-        }
-        else {
+        } else {
             val = str;
         }
         return (T) val;
