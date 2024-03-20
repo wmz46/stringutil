@@ -1,10 +1,12 @@
 package com.iceolive.util;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,7 +127,11 @@ public class StringUtil {
             return new LocalDateFormatProvider();
         } else if ("java.time.LocalDateTime".equals(typeName)) {
             return new LocalDateTimeFormatProvider();
-        } else {
+        } else if ("java.time.LocalTime".equals(typeName)) {
+            return new LocalTimeFormatProvider();
+        }  else if ("java.sql.Time".equals(typeName)) {
+            return new TimeFormatProvider();
+        }else {
             return null;
         }
 
@@ -247,11 +253,22 @@ public class StringUtil {
         } else if (clazz.isAssignableFrom(LocalDateTime.class)) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
             return (T) LocalDateTime.parse(str, dateTimeFormatter);
-        } else if (clazz.isAssignableFrom(char.class)) {
+        } else if(clazz.isAssignableFrom(LocalTime.class)){
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+            return (T) LocalTime.parse(str,dateTimeFormatter);
+        }else if(clazz.isAssignableFrom(Time.class)){
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+                Date date = simpleDateFormat.parse(str);
+                return (T)new Time(date.getTime());
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }else if (clazz.isAssignableFrom(char.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = str.charAt(0);
             }
-        } else if (clazz.isAssignableFrom(Character.class)) {
+        }else if (clazz.isAssignableFrom(Character.class)) {
             if (!StringUtil.isEmpty(str)) {
                 val = str.charAt(0);
             }
